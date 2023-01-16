@@ -1,0 +1,13 @@
+
+.btn-item {
+    font-size: 15px;
+    background-color: transparent;
+    border-radius: none;
+}
+
+
+.btn-success, .btn-info {
+    min-width: 80px;
+}
+
+
