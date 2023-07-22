@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Lista from './Lista'
 
 import type {IItem} from '../types'
@@ -9,6 +9,7 @@ const Input = () => {
     const [item, setItem] = useState<IItem[]>([])
     const [isEditing, setIsEditing] = useState<boolean>(false)
     const [editId, setEditId] = useState<string>('')
+    const [loaded, setLoaded] = useState<boolean>(false);
 
     const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -32,21 +33,33 @@ const Input = () => {
         } 
     }
 
-    const agregarItem = (name: string) =>{
+    const agregarItem = (name: IItem['name']) =>{
         setItem([...item, {id:new Date().getTime().toString(), name: name}])
     }
 
-    const editarItem = (id: string):void => {
+    const editarItem = (id: IItem['id']) => {
         const editItem = item.find(index=>index.id === id)!
         setName(editItem.name)
         setIsEditing(true)
         setEditId(id)
     }
 
-    const eliminarItem = (id: string): void => {
+    const eliminarItem = (id: IItem['id']) => {
         const newItem = item.filter(index=>index.id !== id)
         setItem(newItem)
     }
+
+    useEffect(() => {
+        const savedItems = JSON.parse(localStorage.getItem('items') || '[]');
+        setItem(savedItems);
+        setLoaded(true);
+    }, []);
+
+    useEffect(() => {
+        if (loaded) {
+          localStorage.setItem("items", JSON.stringify(item));
+        }
+      }, [item, loaded]);
 
     return(
         <>
